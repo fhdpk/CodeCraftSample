@@ -31,23 +31,23 @@ public class MainActivity extends AppCompatActivity {
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
-            Toast.makeText(MainActivity.this,location.getLatitude()+","+location.getLongitude(),Toast.LENGTH_LONG).show();
-            Log.d("Loc: Latitude",location.getLatitude()+","+location.getLongitude());
+            Toast.makeText(MainActivity.this, location.getLatitude() + "," + location.getLongitude(), Toast.LENGTH_LONG).show();
+            Log.d("Loc: Latitude", location.getLatitude() + "," + location.getLongitude());
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-            Log.d("Loc: provider","disable");
+            Log.d("Loc: provider", "disable");
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            Log.d("Loc: provider","enable");
+            Log.d("Loc: provider", "enable");
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.d("Loc: status",status+"");
+            Log.d("Loc: status", status + "");
         }
     };
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        if ( !mLocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
         }
     }
@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if ( mLocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+        if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermission();
+                requestPermission();
             } else {
                 mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                         LOCATION_REFRESH_DISTANCE, mLocationListener);
