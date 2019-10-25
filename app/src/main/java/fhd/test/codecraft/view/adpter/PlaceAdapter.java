@@ -14,12 +14,14 @@ import fhd.test.codecraft.R;
 import fhd.test.codecraft.model.Place;
 import fhd.test.codecraft.model.PlaceItem;
 import fhd.test.codecraft.model.ProgressModel;
+import fhd.test.codecraft.utils.ImageLoader;
 import fhd.test.codecraft.view.activity.MainActivity;
 
 public class PlaceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_LOADING = 1;
     private static final int VIEW_TYPE_ITEM = 0;
+    private final ImageLoader imageLoader;
     private ArrayList<Place> places;
     private MainActivity mContext;
     private String oldRef;
@@ -27,6 +29,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public PlaceAdapter(MainActivity context, ArrayList<Place> places) {
         this.mContext = context;
         this.places = places;
+        imageLoader= new ImageLoader(context);
     }
 
 
@@ -52,7 +55,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         final ViewHolder holder = ((ViewHolder) viewHolder);
 
-        // holder.ivIcon.   place.getIcon();
+        imageLoader.DisplayImage(placeItem.getIcon(), holder.ivIcon);
 
         holder.tvName.setText(placeItem.getName());
         holder.tvDistance.setText(placeItem.getDistance() + "");

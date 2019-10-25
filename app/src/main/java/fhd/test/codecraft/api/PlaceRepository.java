@@ -28,11 +28,10 @@ public class PlaceRepository implements HttpPlaces.OnLocationListener {
     }
 
     public MutableLiveData<ArrayList<Place>> getPlaces(Context mContext) {
-        if(places == null)
-        places = new MutableLiveData<>();
-        if(places.getValue() == null)
+        if (places == null)
+            places = new MutableLiveData<>();
+        if (places.getValue() == null)
             places.postValue(new ArrayList<Place>());
-
 
 
         new HttpPlaces(SharedPreferencesUtil.getLat(mContext),

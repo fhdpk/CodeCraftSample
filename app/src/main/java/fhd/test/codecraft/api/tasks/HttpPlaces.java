@@ -38,7 +38,7 @@ public class HttpPlaces extends AsyncTask<String, Void, String> {
 
     public HttpPlaces(double latitude, double longitude,
                       MutableLiveData<ArrayList<Place>> location,
-                      OnLocationListener onLocationListener,String nextPageToken) {
+                      OnLocationListener onLocationListener, String nextPageToken) {
 
         this.latitude = latitude;
         this.longitude = longitude;
@@ -129,11 +129,11 @@ public class HttpPlaces extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
-       if(errorMessage!=null) {
-           onLocationListener.onLocationsError("errorMessage");
-       }else if (onLocationListener != null && response != null ) {
+        if (errorMessage != null) {
+            onLocationListener.onLocationsError("errorMessage");
+        } else if (onLocationListener != null && response != null) {
             onLocationListener.onLocationsReceived(placesList, nextPageToken);
-       } else
+        } else
             onLocationListener.onLocationsError("Something went wrong, Try again later");
     }
 

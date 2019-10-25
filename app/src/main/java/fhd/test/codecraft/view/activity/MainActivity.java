@@ -32,6 +32,8 @@ import fhd.test.codecraft.viewModel.PlaceViewModel;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLocationChanged(final Location location) {
             placeViewModel = ViewModelProviders.of(MainActivity.this).get(PlaceViewModel.class);
-            if (placeViewModel.getPlaces().getValue() == null || placeViewModel.getPlaces().getValue().size() <= 0)
-            layoutLoading.setVisibility(View.VISIBLE);
             SharedPreferencesUtil.setLat(MainActivity.this, location.getLatitude());
             SharedPreferencesUtil.setLng(MainActivity.this, location.getLongitude());
             placeViewModel.init();
@@ -88,13 +88,14 @@ public class MainActivity extends AppCompatActivity {
 
         placeRecyclerView = findViewById(R.id.placeRecyclerView);
         layoutLoading = findViewById(R.id.layoutLoading);
-        layoutLoading.setVisibility(View.GONE);
 
 
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ) {
             requestPermission();
         } else {
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(this,
-                new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION},
+                new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE},
                 PERMISSIONS_REQUEST_ACCESS_LOC);
     }
 
@@ -181,18 +182,19 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0) {
 
                     boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean storageAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
 
-                    if (locationAccepted) {
-                        Toast.makeText(MainActivity.this, "Permission Granted, Now you can access location data.", Toast.LENGTH_LONG).show();
+                    if (locationAccepted && storageAccepted) {
+                        Toast.makeText(MainActivity.this, "Permission Granted.", Toast.LENGTH_LONG).show();
                         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                             buildAlertMessageNoGps();
                         }
                     } else {
 
-                        Toast.makeText(MainActivity.this, "Permission Denied, You cannot access location data.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Permission Denied.", Toast.LENGTH_LONG).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             showMessageOKCancel(
-                                    "You need to allow location access permission",
+                                    "You need to allow both access permissions",
                                     (dialog, which) -> {
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                             requestPermission();
