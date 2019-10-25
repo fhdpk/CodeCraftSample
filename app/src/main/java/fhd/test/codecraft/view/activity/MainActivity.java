@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import fhd.test.codecraft.R;
 import fhd.test.codecraft.model.Place;
 import fhd.test.codecraft.utils.SharedPreferencesUtil;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private PlaceAdapter placeAdapter;
     private boolean isLoading = false;
     private boolean isLastPage = false;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,14 +107,28 @@ public class MainActivity extends AppCompatActivity {
                     LOCATION_REFRESH_DISTANCE, mLocationListener);
         }
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_red_dark,
+                android.R.color.holo_orange_dark, android.R.color.holo_blue_dark,
+                android.R.color.holo_green_dark);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> placeViewModel.clearPlaces());
+
     }
 
     private void getPlaces() {
         isLoading = true;
         placeViewModel.getPlaces().observe(this, (ArrayList<Place> places) -> {
             isLoading = false;
+            if(places.size()==0) {
+                layoutLoading.setVisibility(View.VISIBLE);
+                placeRecyclerView.setVisibility(View.GONE);
+            }else {
+                layoutLoading.setVisibility(View.GONE);
+                placeRecyclerView.setVisibility(View.VISIBLE);
+            }
             setupRecyclerView(places);
             Log.e("liveData::", "success");
+            mSwipeRefreshLayout.setRefreshing(false);
         });
     }
 
@@ -148,8 +164,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             placeAdapter.notifyDataSetChanged();
         }
-        placeRecyclerView.setVisibility(View.VISIBLE);
-        layoutLoading.setVisibility(View.GONE);
+
     }
 
     @Override

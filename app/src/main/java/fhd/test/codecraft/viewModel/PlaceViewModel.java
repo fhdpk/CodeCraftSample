@@ -25,7 +25,6 @@ public class PlaceViewModel extends AndroidViewModel {
     }
 
     public void init() {
-
         mLocationLiveData = mPlaceRepository.getPlaces(mContext);
 
     }
@@ -35,6 +34,14 @@ public class PlaceViewModel extends AndroidViewModel {
     }
 
     public LiveData<ArrayList<Place>> getMorePlaces() {
+        mLocationLiveData = mPlaceRepository.getPlaces(mContext);
+        return mLocationLiveData;
+    }
+
+    public LiveData<ArrayList<Place>> clearPlaces() {
+        ArrayList<Place> list = mLocationLiveData.getValue();
+        list.clear();
+        mLocationLiveData.postValue(list);
         mLocationLiveData = mPlaceRepository.getPlaces(mContext);
         return mLocationLiveData;
     }
