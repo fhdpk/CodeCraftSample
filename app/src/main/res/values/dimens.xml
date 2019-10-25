@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="image_size">50dp</dimen>
+    <dimen name="distance_size">60dp</dimen>
+    <dimen name="layout_padding">8dp</dimen>
+    <dimen name="normal_text_size">14sp</dimen>
+    <dimen name="large_text_size">18sp</dimen>
+</resources>
