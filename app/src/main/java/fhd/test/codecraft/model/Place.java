@@ -1,6 +1,8 @@
 
 package fhd.test.codecraft.model;
 
-public interface Place {
+import java.io.Serializable;
+
+public interface Place extends Serializable {
 
 }

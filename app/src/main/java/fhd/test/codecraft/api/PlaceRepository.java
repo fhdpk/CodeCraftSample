@@ -2,6 +2,7 @@ package fhd.test.codecraft.api;
 
 
 import android.content.Context;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ public class PlaceRepository implements HttpRequestPlaces.OnLocationListener {
 
     private MutableLiveData<ArrayList<Place>> places;
     private String nextPageToken;
+    private Context mContext;
 
     public static PlaceRepository getInstance() {
         if (mPlaceRepository == null) {
@@ -25,15 +27,16 @@ public class PlaceRepository implements HttpRequestPlaces.OnLocationListener {
         return mPlaceRepository;
     }
 
-    public MutableLiveData<ArrayList<Place>> getPlaces(Context mContext) {
+    public MutableLiveData<ArrayList<Place>> getPlaces(Context context) {
+        mContext = context;
         if (places == null)
             places = new MutableLiveData<>();
         if (places.getValue() == null)
             places.postValue(new ArrayList<Place>());
 
 
-        new HttpRequestPlaces(SharedPreferencesUtil.getLat(mContext),
-                SharedPreferencesUtil.getLng(mContext), places, this,
+        new HttpRequestPlaces(SharedPreferencesUtil.getLat(context),
+                SharedPreferencesUtil.getLng(context), places, this,
                 (places.getValue() == null || places.getValue().size() == 0 ? "" : nextPageToken)).execute();
         return places;
     }
@@ -55,6 +58,7 @@ public class PlaceRepository implements HttpRequestPlaces.OnLocationListener {
 
     @Override
     public void onLocationsError(String msg) {
-
+        Toast.makeText(mContext, ""+msg, Toast.LENGTH_SHORT).show();
+        places.postValue(places.getValue());
     }
 }
