@@ -15,13 +15,14 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import androidx.lifecycle.MutableLiveData;
+import fhd.test.codecraft.CodeCraftApp;
 import fhd.test.codecraft.api.PlaceRepository;
 import fhd.test.codecraft.model.Place;
 import fhd.test.codecraft.model.PlaceItem;
 import fhd.test.codecraft.model.ProgressModel;
 
 
-public class HttpPlaces extends AsyncTask<String, Void, String> {
+public class HttpRequestPlaces extends AsyncTask<String, Void, String> {
 
     private final double latitude;
     private final double longitude;
@@ -36,15 +37,15 @@ public class HttpPlaces extends AsyncTask<String, Void, String> {
     private OnLocationListener onLocationListener;
     private String urlStr;
 
-    public HttpPlaces(double latitude, double longitude,
-                      MutableLiveData<ArrayList<Place>> location,
-                      OnLocationListener onLocationListener, String nextPageToken) {
+    public HttpRequestPlaces(double latitude, double longitude,
+                             MutableLiveData<ArrayList<Place>> location,
+                             OnLocationListener onLocationListener, String nextPageToken) {
 
         this.latitude = latitude;
         this.longitude = longitude;
         this.onLocationListener = onLocationListener;
         urlStr = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
-                "type=restaurant&key=" + PlaceRepository.GOOGLE_API_KEY +
+                "type=restaurant&key=" + CodeCraftApp.GOOGLE_API_KEY +
                 "&rankby=distance&location=" + latitude + "," + longitude + "&pagetoken="
                 + nextPageToken;
 
@@ -95,10 +96,10 @@ public class HttpPlaces extends AsyncTask<String, Void, String> {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray array = jsonObject.getJSONArray("results");
 
-            try {
+            if(jsonObject.has("error_message")) {
                 errorMessage = jsonObject.getString("error_message");
-            } catch (JSONException excptn) {
-                errorMessage = null;
+                onLocationListener.onLocationsError(errorMessage);
+                return;
             }
 
             for (int i = 0; i < array.length(); i++) {
@@ -109,18 +110,13 @@ public class HttpPlaces extends AsyncTask<String, Void, String> {
                 place.setName(item.getString("name"));
                 place.setIcon(item.getString("icon"));
                 place.setVicinity(item.getString("vicinity"));
-                place.setReference(item.getString("reference"));
+                place.setPhotoReference(item.has("photos")? ((JSONObject)item.getJSONArray("photos").get(0)).getString("photo_reference") : "");
                 place.setDistance(distance(latitude, longitude, place.getLat(), place.getLng()));
                 placesList.add(place);
             }
-            try {
-                nextPageToken = jsonObject.getString("next_page_token");
-                if (nextPageToken != null && nextPageToken.length() > 0) {
-                    placesList.add(new ProgressModel());
-                } else {
-                    nextPageToken = null;
-                }
-            } catch (JSONException excptn) {
+            if(jsonObject.has("next_page_token")){
+                placesList.add(new ProgressModel());
+            } else {
                 nextPageToken = null;
             }
         } catch (JSONException e) {
@@ -129,9 +125,7 @@ public class HttpPlaces extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
 
-        if (errorMessage != null) {
-            onLocationListener.onLocationsError("errorMessage");
-        } else if (onLocationListener != null && response != null) {
+        if (onLocationListener != null && response != null) {
             onLocationListener.onLocationsReceived(placesList, nextPageToken);
         } else
             onLocationListener.onLocationsError("Something went wrong, Try again later");

@@ -1,5 +1,6 @@
 package fhd.test.codecraft.view.adpter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import fhd.test.codecraft.model.PlaceItem;
 import fhd.test.codecraft.model.ProgressModel;
 import fhd.test.codecraft.utils.ImageLoader;
 import fhd.test.codecraft.view.activity.MainActivity;
+import fhd.test.codecraft.view.activity.PlaceDetailsActivty;
 
 public class PlaceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -62,8 +64,15 @@ public class PlaceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.tvVicinity.setText(placeItem.getVicinity());
 
         holder.item.setOnClickListener(view -> {
-            Toast.makeText(mContext, placeItem.getReference(), Toast.LENGTH_SHORT).show();
-            //TODO:call placeDetails using place.getReference()
+            if(placeItem.getPhotoReference()==null) {
+                Toast.makeText(mContext, "No reference Value received", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent intent = new Intent(mContext, PlaceDetailsActivty.class);
+            intent.putExtra(PlaceDetailsActivty.PLACE_PHOTO_REFERENCE,placeItem.getPhotoReference());
+            intent.putExtra(PlaceDetailsActivty.PLACE_NAME,placeItem.getName());
+            mContext.startActivity(intent);
         });
     }
 
@@ -127,8 +136,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 //
 //    public void add(PlaceItem placeItem) {
-//        if( oldRef != placeItem.getReference()) {
-//            oldRef = placeItem.getReference();
+//        if( oldRef != placeItem.getPhotoReference()) {
+//            oldRef = placeItem.getPhotoReference();
 //            places.add(placeItem);
 //
 //            Handler handler = new Handler();

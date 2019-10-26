@@ -6,14 +6,12 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import androidx.lifecycle.MutableLiveData;
-import fhd.test.codecraft.api.tasks.HttpPlaces;
+import fhd.test.codecraft.api.tasks.HttpRequestPlaces;
 import fhd.test.codecraft.model.Place;
 import fhd.test.codecraft.model.ProgressModel;
 import fhd.test.codecraft.utils.SharedPreferencesUtil;
 
-public class PlaceRepository implements HttpPlaces.OnLocationListener {
-
-    public static String GOOGLE_API_KEY = "AIzaSyDFw0r7cbRqM-IK9sPZrutohHZu_PMEMpM";
+public class PlaceRepository implements HttpRequestPlaces.OnLocationListener {
 
     private static PlaceRepository mPlaceRepository;
 
@@ -34,7 +32,7 @@ public class PlaceRepository implements HttpPlaces.OnLocationListener {
             places.postValue(new ArrayList<Place>());
 
 
-        new HttpPlaces(SharedPreferencesUtil.getLat(mContext),
+        new HttpRequestPlaces(SharedPreferencesUtil.getLat(mContext),
                 SharedPreferencesUtil.getLng(mContext), places, this,
                 (places.getValue() == null || places.getValue().size() == 0 ? "" : nextPageToken)).execute();
         return places;

@@ -8,7 +8,7 @@ public class PlaceItem implements Place{
     private String icon;
     private String name;
     private String vicinity;
-    private String reference;
+    private String photoReference;
     private boolean isLoader;
     private String distance;
 
@@ -53,12 +53,12 @@ public class PlaceItem implements Place{
         this.vicinity = vicinity;
     }
 
-    public String getReference() {
-        return reference;
+    public String getPhotoReference() {
+        return photoReference;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setPhotoReference(String photoReference) {
+        this.photoReference = photoReference;
     }
 
     public void setLoader(boolean loader) {
