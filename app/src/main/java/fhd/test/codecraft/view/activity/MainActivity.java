@@ -8,6 +8,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -115,7 +116,11 @@ public class MainActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_red_dark,
                 android.R.color.holo_orange_dark, android.R.color.holo_blue_dark,
                 android.R.color.holo_green_dark);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> placeViewModel.clearPlaces());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if(placeViewModel!=null){
+                placeViewModel.clearPlaces();
+            }
+        });
 
     }
 
@@ -255,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId())
         {
             case R.id.menuMap:
-                if(placeViewModel.getPlaces() ==null) {
+                if(placeViewModel == null || placeViewModel.getPlaces() == null) {
                     Toast.makeText(MainActivity.this, "Wait till locations are loaded.", Toast.LENGTH_LONG).show();
                     break;
                 }
