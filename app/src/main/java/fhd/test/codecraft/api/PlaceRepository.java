@@ -31,13 +31,19 @@ public class PlaceRepository implements HttpRequestPlaces.OnLocationListener {
         mContext = context;
         if (places == null)
             places = new MutableLiveData<>();
-        if (places.getValue() == null)
+        if (places.getValue() == null) {
             places.postValue(new ArrayList<Place>());
 
+        }
 
-        new HttpRequestPlaces(SharedPreferencesUtil.getLat(context),
-                SharedPreferencesUtil.getLng(context), places, this,
-                (places.getValue() == null || places.getValue().size() == 0 ? "" : nextPageToken)).execute();
+        if (places.getValue() == null || places.getValue().size() == 0) {
+            nextPageToken = "";
+        }
+        if (nextPageToken != null){
+            new HttpRequestPlaces(SharedPreferencesUtil.getLat(context),
+                    SharedPreferencesUtil.getLng(context), places, this,
+                    (places.getValue() == null || places.getValue().size() == 0 ? "" : nextPageToken)).execute();
+        }
         return places;
     }
 
