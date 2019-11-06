@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import androidx.lifecycle.MutableLiveData;
 import fhd.test.codecraft.CodeCraftApp;
-import fhd.test.codecraft.api.PlaceRepository;
 import fhd.test.codecraft.model.Place;
 import fhd.test.codecraft.model.PlaceItem;
 import fhd.test.codecraft.model.ProgressModel;
@@ -115,6 +114,7 @@ public class HttpRequestPlaces extends AsyncTask<String, Void, String> {
                 placesList.add(place);
             }
             if(jsonObject.has("next_page_token")){
+                nextPageToken = jsonObject.getString("next_page_token");
                 placesList.add(new ProgressModel());
             } else {
                 nextPageToken = null;
