@@ -31,6 +31,8 @@ public class HttpRequestPlaces extends AsyncTask<String, Void, String> {
         void onLocationsReceived(ArrayList<Place> placesList, String responseData);
 
         void onLocationsError(String msg);
+
+        void NeedReRequest();
     }
 
     private OnLocationListener onLocationListener;
@@ -102,6 +104,10 @@ public class HttpRequestPlaces extends AsyncTask<String, Void, String> {
                 onLocationListener.onLocationsError(errorMessage);
                 return;
             }
+            else if((jsonObject.getString("status").equals("INVALID_REQUEST"))) {
+                onLocationListener.NeedReRequest();
+                return;
+            }
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject item = (JSONObject) array.get(i);
@@ -119,9 +125,7 @@ public class HttpRequestPlaces extends AsyncTask<String, Void, String> {
                 nextPageToken = jsonObject.getString("next_page_token");
                 placesList.add(new ProgressModel());
             } else {
-                if(!(jsonObject.getString("status").equals("INVALID_REQUEST"))) {
                     nextPageToken = null;
-                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

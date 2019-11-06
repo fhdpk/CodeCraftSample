@@ -67,4 +67,9 @@ public class PlaceRepository implements HttpRequestPlaces.OnLocationListener {
         Toast.makeText(mContext, ""+msg, Toast.LENGTH_SHORT).show();
         places.postValue(places.getValue());
     }
+
+    @Override
+    public void NeedReRequest() {
+        getPlaces(mContext);
+    }
 }
