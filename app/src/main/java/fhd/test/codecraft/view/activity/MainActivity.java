@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     private View layoutLoading;
     private PlaceAdapter placeAdapter;
     private boolean isLoading = false;
-    private boolean isLastPage = false;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
@@ -138,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             setupRecyclerView(places);
             Log.e("liveData::", "success");
             mSwipeRefreshLayout.setRefreshing(false);
+            isLoading = false;
         });
     }
 
@@ -154,11 +154,6 @@ public class MainActivity extends AppCompatActivity {
                     if (isLoading) return;
                     isLoading = true;
                     placeRecyclerView.post(() -> placeViewModel.getMorePlaces());
-                }
-
-                @Override
-                public boolean isLastPage() {
-                    return isLastPage;
                 }
 
                 @Override
