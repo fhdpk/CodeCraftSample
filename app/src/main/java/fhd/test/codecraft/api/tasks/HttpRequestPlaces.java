@@ -42,11 +42,13 @@ public class HttpRequestPlaces extends AsyncTask<String, Void, String> {
 
         this.latitude = latitude;
         this.longitude = longitude;
+        this.nextPageToken = nextPageToken;
         this.onLocationListener = onLocationListener;
         urlStr = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                 "type=restaurant&key=" + CodeCraftApp.GOOGLE_API_KEY +
                 "&rankby=distance&location=" + latitude + "," + longitude + "&pagetoken="
                 + nextPageToken;
+        Log.d("urlStr ::", urlStr + "");
 
     }
 
@@ -90,7 +92,7 @@ public class HttpRequestPlaces extends AsyncTask<String, Void, String> {
         super.onPostExecute(response);
         String errorMessage = null;
         ArrayList<Place> placesList = new ArrayList<>();
-        Log.e("Result ::", response + "");
+        Log.d("Result ::", response + "");
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray array = jsonObject.getJSONArray("results");
@@ -117,7 +119,9 @@ public class HttpRequestPlaces extends AsyncTask<String, Void, String> {
                 nextPageToken = jsonObject.getString("next_page_token");
                 placesList.add(new ProgressModel());
             } else {
-                nextPageToken = null;
+                if(!(jsonObject.getString("status").equals("INVALID_REQUEST"))) {
+                    nextPageToken = null;
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
