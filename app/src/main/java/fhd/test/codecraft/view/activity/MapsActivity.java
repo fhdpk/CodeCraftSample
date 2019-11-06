@@ -54,8 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         currentLocation = new LatLng(SharedPreferencesUtil.getLat(this),SharedPreferencesUtil.getLng(this) );
         Marker currentLocationMarker = mMap.addMarker(new MarkerOptions()
                 .position(currentLocation)
-                .title("Current Location")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                .title("Current Location"));
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(currentLocationMarker.getPosition());
 
