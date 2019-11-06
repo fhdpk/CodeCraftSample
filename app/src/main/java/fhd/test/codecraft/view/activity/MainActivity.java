@@ -255,6 +255,10 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId())
         {
             case R.id.menuMap:
+                if(placeViewModel.getPlaces() ==null) {
+                    Toast.makeText(MainActivity.this, "Wait till locations are loaded.", Toast.LENGTH_LONG).show();
+                    break;
+                }
                 Intent intent = new Intent(this,MapsActivity.class);
                 intent.putExtra(MapsActivity.PLACES_LIST, placeViewModel.getPlaces().getValue());
                 startActivity(intent);
